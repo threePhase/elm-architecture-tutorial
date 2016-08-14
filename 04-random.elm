@@ -4,55 +4,78 @@ import Html.Events exposing (onClick)
 import Html.Attributes exposing (..)
 
 import Random
-import List exposing (repeat)
+import List exposing (map, repeat)
 
 main =
   Html.program { init = init, update = update, subscriptions = subscriptions, view = view}
 
 -- MODEL
 
+type alias Die =
+  { dieFace : Int }
+
 type alias Model =
-  { dieFace : Int
-  }
+  List Die
 
 model : Model
-model =
-  { dieFace = 1 }
+model = [Die 1, Die 1]
 
 
 -- UPDATE
 
 type Msg
   = Roll
-  | NewFace Int
+  | NewFace (Int, Int)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Roll ->
-      (model, Random.generate NewFace (Random.int 1 6))
+      (model, Random.generate NewFace (Random.pair (Random.int 1 6) (Random.int 1 6)))
 
-    NewFace newFace ->
-      (Model newFace, Cmd.none)
+    NewFace (newFace1, newFace2) ->
+      ([Die newFace1, Die newFace2], Cmd.none)
 
 
 -- VIEW
 
 view : Model -> Html Msg
 view model =
-  div []
-    [ h1 [] [ text (toString model.dieFace) ]
-    , displayDieFace model
+  div [ style [ ("display", "flex")
+              , ("flex-direction", "column")
+              , ("height", "50%")
+              , ("text-align", "center")
+              , ("width", "50%")
+              ]
+      ]
+    [ div [ style [ ("display", "flex")
+                  , ("flex-direction", "row")
+                  ]
+          ] (map displayDie model)
     , button [ onClick Roll ] [ text "Roll" ]
     ]
 
-displayDieFace : Model -> Html msg
-displayDieFace model =
+displayDie : Die -> Html Msg
+displayDie die =
+  div [ style [ ("margin", "10%")
+              , ("flex", "1 1 auto")
+              --, ("margin-right", "10%")
+              ]
+      ]
+    [ h1 [] [ text (toString die.dieFace) ]
+    , displayDieFace die
+    ]
+
+displayDieFace : Die -> Html msg
+displayDieFace die =
   let
-    dots = model.dieFace
+    dots = die.dieFace
   in
     div [ style [ ("width", "100px")
                 , ("height", "100px")
+                , ("flex-wrap", "wrap")
+                , ("flex-direction", "row")
+                , ("display", "flex")
                 , ("border", "black 5px solid")
                 , ("border-radius", "5px")
                 ]
@@ -60,7 +83,7 @@ displayDieFace model =
       (repeat dots (div [ style [ ("width", "20px")
                                 , ("height", "20px")
                                 , ("margin", "6%")
-                                , ("display", "inline-block")
+                                , ("flex", "0 0 auto")
                                 , ("background", "black")
                                 , ("border-radius", "20px")
                                 ]
@@ -80,4 +103,4 @@ subscriptions model = Sub.none
 
 init : (Model, Cmd Msg)
 init =
-  (Model 1, Cmd.none)
+  ([Die 1, Die 1], Cmd.none)
