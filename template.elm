@@ -1,3 +1,10 @@
+import Html exposing (..)
+import Html.App as Html
+
+
+main =
+  Html.program { init = init, update = update, subscriptions = subscriptions, view = view}
+
 -- MODEL
 
 type alias Model =
@@ -24,8 +31,7 @@ view model =
 -- SUBSCRIPTIONS
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
-  ...
+subscriptions model = Sub.none
 
 
 
