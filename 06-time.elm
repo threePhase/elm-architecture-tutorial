@@ -7,8 +7,7 @@ import Time exposing (Time, second)
 
 main =
   App.program
-    {
-      init = init
+    { init = init
     , view = view
     , update = update
     , subscriptions = subscriptions
@@ -49,6 +48,11 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
+    svg [ viewBox "0 0 100 150", width "300px" ]
+      [ drawClock model, drawButton ]
+
+drawClock : Model -> Svg msg
+drawClock model =
   let
     angle =
       turns (Time.inMinutes model)
@@ -59,7 +63,26 @@ view model =
     handY =
       toString (50 + 40 * sin angle)
   in
-    svg [ viewBox "0 0 100 100", width "300px" ]
+    g []
       [ circle [ cx "50", cy "50", r "45", fill "#0B79CE" ] []
       , line [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#023963"] []
       ]
+
+drawButton : Svg msg
+drawButton =
+  g [ Svg.Attributes.cursor "pointer" ]
+    [
+     rect [ fill "none"
+          , stroke "black"
+          , x "25"
+          , y "120"
+          , width "50"
+          , height "10"
+          , rx "2"
+          , ry "2" ] [ ]
+    , text' [ x "30"
+            , y "128"
+            , fontFamily "arial"
+            , fontSize "9"
+            ] [ text "Start/Stop" ]
+    ]
