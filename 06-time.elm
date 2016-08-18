@@ -61,7 +61,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     svg [ viewBox "0 0 100 150", width "300px" ]
-      [ drawClock model, drawButton ]
+      [ drawClock model, drawButton model ]
 
 drawClock : Model -> Svg Msg
 drawClock model =
@@ -81,23 +81,26 @@ drawClock model =
       , line [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#023963"] []
       ]
 
-drawButton : Svg Msg
-drawButton =
-  g [ Svg.Attributes.cursor "pointer"
-    , onClick Power
-    ]
+drawButton : Model -> Svg Msg
+drawButton model =
+  let
+    buttonText = if model.power then "Stop" else "Start"
+  in
+    g [ Svg.Attributes.cursor "pointer"
+      , onClick Power
+      ]
     [
      rect [ fill "none"
           , stroke "black"
-          , x "25"
+          , x "35"
           , y "120"
-          , width "50"
+          , width "30"
           , height "10"
           , rx "2"
           , ry "2" ] [ ]
-    , text' [ x "30"
+    , text' [ x "40"
             , y "128"
             , fontFamily "arial"
             , fontSize "9"
-            ] [ text "Start/Stop" ]
+            ] [ text buttonText ]
     ]
