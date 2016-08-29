@@ -35,6 +35,7 @@ type Msg
   = Reset
   | Top Counter.Msg
   | Bottom Counter.Msg
+  | Swap
 
 update : Msg -> Model -> Model
 update msg model =
@@ -48,6 +49,10 @@ update msg model =
     Bottom msg ->
       { model | bottomCounter = Counter.update msg model.bottomCounter}
 
+    Swap ->
+      { model | bottomCounter = model.topCounter,
+                topCounter = model.bottomCounter }
+
 
 -- VIEW
 
@@ -57,4 +62,5 @@ view model =
     [ Html.map Top (Counter.view model.topCounter)
     , Html.map Bottom (Counter.view model.bottomCounter)
     , button [ onClick Reset ] [ text "Reset" ]
+    , button [ onClick Swap ] [ text "Swap" ]
     ]
