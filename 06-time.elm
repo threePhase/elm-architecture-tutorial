@@ -5,7 +5,7 @@ import Svg.Attributes exposing (..)
 import Svg.Events exposing (onClick)
 import Time exposing (Time, second)
 
-
+main : Program Never
 main =
   App.program
     { init = init
@@ -66,9 +66,26 @@ view model =
 drawClock : Model -> Svg Msg
 drawClock model =
   let
-    time = if model.power then model.time else 0
+    tzOffsetInHours = -7
+    millisecondsInHour = 3600 * 1000
+    offset = tzOffsetInHours * millisecondsInHour
+    time = if model.power then (model.time + offset) else 0
+    hours = (truncate (Time.inHours time)) % 24
+    minutes = (truncate (Time.inMinutes time)) % 60
+    seconds = (truncate (Time.inSeconds time)) % 60
+  in
+    g []
+      [ circle [ cx "50", cy "50", r "45", fill "#0B79CE" ] []
+      , drawHoursHand <| toFloat hours
+      , drawMinutesHand <| toFloat minutes
+      , drawSecondsHand <| toFloat seconds
+      ]
+
+drawSecondsHand : Float -> Svg Msg
+drawSecondsHand seconds =
+  let
     angle =
-      turns (Time.inMinutes time)
+      turns ((seconds / 60) - (1 / 4))
 
     handX =
       toString (50 + 40 * cos angle)
@@ -76,10 +93,52 @@ drawClock model =
     handY =
       toString (50 + 40 * sin angle)
   in
-    g []
-      [ circle [ cx "50", cy "50", r "45", fill "#0B79CE" ] []
-      , line [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#023963"] []
-      ]
+    line [ x1 "50"
+         , y1 "50"
+         , x2 handX
+         , y2 handY
+         , stroke "#dd2222"
+         ] []
+
+drawMinutesHand : Float -> Svg Msg
+drawMinutesHand minutes =
+  let
+    angle =
+      turns ((minutes / 60) - (1 / 4))
+
+    handX =
+      toString (50 + 30 * cos angle)
+
+    handY =
+      toString (50 + 30 * sin angle)
+  in
+    line [ x1 "50"
+         , y1 "50"
+         , x2 handX
+         , y2 handY
+         , stroke "#023963"
+         , strokeWidth "2"
+         ] []
+
+drawHoursHand : Float -> Svg Msg
+drawHoursHand hours =
+  let
+    angle =
+      turns ((hours / 12) - (1 / 4))
+
+    handX =
+      toString (50 + 25 * cos angle)
+
+    handY =
+      toString (50 + 25 * sin angle)
+  in
+    line [ x1 "50"
+         , y1 "50"
+         , x2 handX
+         , y2 handY
+         , stroke "#023963"
+         , strokeWidth "4"
+         ] []
 
 drawButton : Model -> Svg Msg
 drawButton model =
@@ -97,7 +156,8 @@ drawButton model =
           , width "30"
           , height "10"
           , rx "2"
-          , ry "2" ] [ ]
+          , ry "2"
+          ] [ ]
     , text' [ x "40"
             , y "128"
             , fontFamily "arial"
