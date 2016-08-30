@@ -39,7 +39,7 @@ update msg model =
                               model.maxCount }
 
     Decrement ->
-      { model | count = model.count + 1 }
+      { model | count = model.count - 1 }
 
 
 -- VIEW
