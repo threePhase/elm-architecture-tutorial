@@ -9,6 +9,8 @@ import Html.Events exposing (onClick)
 
 type alias Model =
   { count : Int
+  , incrementPresses : Int
+  , decrementPresses : Int
   , maxCount : Int
   , minCount : Int
   }
@@ -18,7 +20,7 @@ type alias Model =
 
 init : Int -> Model
 init count =
-  Model count count count
+  Model count 0 0 count count
 
 
 -- UPDATE
@@ -34,6 +36,7 @@ update msg model =
       let newCount = model.count + 1
       in
         { model | count = newCount
+                , incrementPresses = model.incrementPresses + 1
                 , maxCount = if newCount > model.maxCount then
                               newCount
                             else
@@ -43,6 +46,7 @@ update msg model =
       let newCount = model.count - 1
       in
         { model | count = model.count - 1
+                , decrementPresses = model.decrementPresses + 1
                 , minCount = if newCount < model.minCount then
                               newCount
                             else
@@ -56,6 +60,8 @@ view model =
     [ button [ onClick Decrement ] [ text "-" ]
     , div [ countStyle ] [ text <| toString model.count ]
     , button [ onClick Increment ] [ text "+" ]
+    , div [ ] [ text <| "Decrement Presses: " ++ toString model.decrementPresses ]
+    , div [ ] [ text <| "Increment Presses: " ++ toString model.incrementPresses ]
     , div [ ] [ text <| "Max Count: " ++ toString model.maxCount ]
     , div [ ] [ text <| "Min Count: " ++ toString model.minCount ]
     ]
