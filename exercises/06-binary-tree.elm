@@ -57,9 +57,18 @@ view model =
     niceTree = model.niceTree
   in
     div [style [ ("font-family", "monospace") ] ]
-      [ display "depth deepTree" (depth deepTree)
+      [ display "deepTree" deepTree
+      , display "niceTree" niceTree
+      , display "depth deepTree" (depth deepTree)
       , display "depth niceTree" (depth niceTree)
-      , display "incremented" (map (\n -> n + 1) niceTree)
+      , display "incremented deepTree" (map (\n -> n + 1) deepTree)
+      , display "incremented niceTree" (map (\n -> n + 1) niceTree)
+      , display "summed deepTree" (sum deepTree)
+      , display "summed niceTree" (sum niceTree)
+      , display "flattened deepTree" (flatten deepTree)
+      , display "flattened niceTree" (flatten niceTree)
+      , display "1 isElement of deepTree" (isElement 1 deepTree)
+      , display "7 isElement of niceTree" (isElement 7 niceTree)
       ]
 
 display : String -> a -> Html msg
