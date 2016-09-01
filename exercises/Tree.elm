@@ -3,6 +3,7 @@ module Tree exposing
   , depth
   , empty
   , flatten
+  , foldl
   , fromList
   , insert
   , isElement
@@ -36,6 +37,14 @@ flatten tree =
 
     Node v left right ->
       v :: flatten left ++ flatten right
+
+foldl : (a -> b -> b) -> b -> Tree a -> b
+foldl func i tree =
+  case tree of
+    Empty -> i
+
+    Node v left right ->
+      foldl func (foldl func (func v i) right) left
 
 fromList : List comparable -> Tree comparable
 fromList xs =

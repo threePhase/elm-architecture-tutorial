@@ -69,6 +69,8 @@ view model =
       , display "flattened niceTree" (flatten niceTree)
       , display "1 isElement of deepTree" (isElement 1 deepTree)
       , display "7 isElement of niceTree" (isElement 7 niceTree)
+      , display "foldl :: [] niceTree" (foldl (::) [] niceTree)
+      , display "foldl + 0 deepTree" (foldl (+) 0 niceTree)
       ]
 
 display : String -> a -> Html msg
